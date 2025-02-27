@@ -1,0 +1,63 @@
+buildscript {
+	repositories {
+		gradlePluginPortal()
+	}
+	dependencies {
+		classpath "com.github.johnrengelman:shadow:8.1.1"
+		classpath group: "org.yaml", name: "snakeyaml", version: "1.19"
+	}
+}
+
+plugins {
+    id "net.researchgate.release" version "3.0.2"
+}
+
+def pluginInformation = new org.yaml.snakeyaml.Yaml().load( new File("src/main/resources/plugin.yml").newInputStream() )
+
+apply plugin: "java-library"
+apply plugin: "eclipse"
+apply plugin: "com.github.johnrengelman.shadow"
+
+repositories {
+    jcenter()
+	maven {
+		url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+		content {
+			includeGroup "org.bukkit"
+			includeGroup "org.spigotmc"
+		}
+	}
+	maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
+	maven { url = "https://oss.sonatype.org/content/repositories/central" }
+}
+
+dependencies {
+	compileOnly "org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT"
+	compileOnly group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
+    compileOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.22.1'
+	implementation group: "com.password4j", name: "password4j", version: "1.8.2"
+	implementation group:'org.xerial', name:'sqlite-jdbc', version:'3.49.1.0'
+}
+
+shadowJar {
+	archiveBaseName.set("sap")
+	archiveVersion.set(pluginInformation.version)
+}
+
+release {
+    failOnPublishNeeded = true
+    failOnSnapshotDependencies = true
+    failOnUnversionedFiles = true
+    failOnUpdateNeeded = true
+    preTagCommitMessage = "[Gradle Release Plugin] - pre tag commit: "
+    tagCommitMessage = "[Gradle Release Plugin] - creating tag: "
+    newVersionCommitMessage = "[Gradle Release Plugin] - new version commit: "
+    tagTemplate = pluginInformation.version
+    versionPropertyFile = "gradle.properties"
+    snapshotSuffix = "-SNAPSHOT"
+    buildTasks = ["shadowJar"]
+    
+    git {
+        requireBranch.set("main")
+    }
+}

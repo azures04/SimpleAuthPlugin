@@ -1,0 +1,33 @@
+name: azures-sap
+main: fr.azures.sap.SimpleAuthPlugin
+version: 0.0.1
+author: azures04
+api-version: 1.21.4
+commands:
+ login:
+  description: Login command
+  usage: /login <password>
+  permission: sap.auth.login
+ logout:
+  description: Logout command
+  usage: /logout
+  permission: sap.auth.logout
+ register:
+  description: Register command
+  usage: /register <PASSWORD> <PASSWORD>
+  permission: sap.auth.register
+ changepassword:
+  description: Command to change password
+  usage: /changepassword <NEW PASSWORD> <NEW PASSWORD>
+  permission: sap.auth.changepassword
+permissions:
+  sap.auth.login:
+    default: true
+  sap.auth.register:
+    default: true
+  sap.auth.auth.logout:
+    default: true
+  sap.auth.changepassword:
+    default: true
+  julesferryplus.auth.invite:
+    default: true
